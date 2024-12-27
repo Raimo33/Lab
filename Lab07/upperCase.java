@@ -7,7 +7,7 @@ char[] upperCase(char[] str)
   return str;
 }
 
-//ricortriva (depth parte da 0)
+//ricorsiva (depth parte da 0)
 char[] upperCase(char[] str, int depth)
 {
   if (str == null)

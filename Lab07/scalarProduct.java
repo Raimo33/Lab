@@ -1,18 +1,18 @@
 //iterativa
-int scalarProduct(int a[], int b[])
+int scalarProduct(int[] a, int[] b)
 {
-  if (!a || !b || a.length != b.length)
+  if (a == null || b == null || a.length != b.length)
     return -1;
-
+  
   int sum = 0;
   for (int i = 0; i < a.length; i++)
-    sum += a[i] * b[i];
+    sum += (a[i] * b[i]);
   return sum;
 }
 //ricorsiva (depth parte da 0)
-int scalarProduct(int a[], int b[], int depth)
+int scalarProduct(int[] a, int[] b, int depth)
 {
-  if (!a || !b || a.length != b.length)
+  if (a == null || b == null || a.length != b.length)
     return -1;
 
   if (depth == a.length)
