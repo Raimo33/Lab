@@ -15,7 +15,7 @@ byte[][] esplodiMatrice(byte[][] T, int r, int c)
 
   int[] dr = { 1, 1, 1, 0, 0, -1, -1, -1 };
   int[] dc = { 1, 0, -1, 1, -1, 1, 0, -1 };
-  reazioneACatena(T, r, c, dr, dc);
+  reazioneACatena(T, r, c, dr, dc, m, n);
   return T;
 }
 
