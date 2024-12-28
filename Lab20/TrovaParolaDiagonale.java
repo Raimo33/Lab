@@ -1,63 +1,61 @@
-public class TrovaParolaDiagonale 
+byte DX    = 0b0001;
+byte DOWN  = 0b0100;
+byte SX    = 0b0010;
+byte UP    = 0b1000;
+
+boolean trovaParolaDiagonale(char[][] M, char[] parola) 
 {
-
-  public static boolean trovaParolaDiagonale(char[][] matrix, char[] word) 
-  {
-    if (matrix == null || word == null) 
-      return false;
-    if (word.length <= 0) 
-      return true;
-    
-    int n_rows = matrix.length;
-    int n_cols = matrix[0].length;
-
-    if (n_rows <= 0 || n_cols <= 0) 
-      return false;
-
-    int longest_diagonal = Math.min(n_rows, n_cols);
-    if (word.length > longest_diagonal) 
-      return false;
-
-    for (int x = 0; x < n_cols; x++) 
-    {
-      for (int y = 0; y < n_rows; y++) 
-      {
-        if (check_diagonal(matrix, word, x, y, n_rows, n_cols, (byte)(RIGHT | DOWN), 0) ||
-            check_diagonal(matrix, word, x, y, n_rows, n_cols, (byte)(LEFT  | DOWN), 0)  ||
-            check_diagonal(matrix, word, x, y, n_rows, n_cols, (byte)(RIGHT | UP), 0)   ||
-            check_diagonal(matrix, word, x, y, n_rows, n_cols, (byte)(LEFT  | UP), 0))
-          return true;
-      }
-    }
+  if (M == null || parola == null) 
     return false;
-  }
+  if (parola.length <= 0) 
+    return false;
+  
+  int m = M.length;
+  int n = M[0].length;
 
-  private static boolean check_diagonal(char[][] matrix, char[] word, int x, int y, int n_rows, int n_cols, byte direction, int index)
+  if (m <= 0 || n <= 0) 
+    return false;
+
+  int diag_max = Math.min(m, n);
+  if (parola.length > diag_max) 
+    return false;
+
+  for (int x = 0; x < n; x++) 
   {
-    if (index >= word.length)
-      return true;
-    
-    int remaining = word.length - index;
-    int steps_x = (direction & RIGHT) != 0 ? (n_cols - x) : (x + 1);
-    int steps_y = (direction & DOWN)  != 0 ? (n_rows - y) : (y + 1);
-    int diagonal_length = Math.min(steps_x, steps_y);
-
-    if (remaining > diagonal_length)
-      return false;
-    if (x < 0 || x >= n_cols || y < 0 || y >= n_rows)
-      return false;
-    if (word[index] != matrix[y][x])
-      return false;
-      
-    int dx = (direction & RIGHT) != 0 ? 1 : -1;
-    int dy = (direction & DOWN)  != 0 ? 1 : -1;
-
-    return check_diagonal(matrix, word, x + dx, y + dy, n_rows, n_cols, direction, index + 1);
+    for (int y = 0; y < m; y++) 
+    {
+      if (controlla_diagonale(M, parola, x, y, m, n, (byte)(DX | DOWN), 0, 0, 0) ||
+          controlla_diagonale(M, parola, x, y, m, n, (byte)(SX | DOWN), 0, 0, 0) ||
+          controlla_diagonale(M, parola, x, y, m, n, (byte)(DX | UP), 0, 0, 0)   ||
+          controlla_diagonale(M, parola, x, y, m, n, (byte)(SX | UP), 0, 0, 0))
+        return true;
+    }
   }
+  return false;
+}
 
-  private static final byte RIGHT = 0b0001;
-  private static final byte LEFT  = 0b0010;
-  private static final byte DOWN  = 0b0100;
-  private static final byte UP    = 0b1000;
+boolean controlla_diagonale(char[][] M, char[] parola, int x, int y, int m, int n, byte direzione, int i, int dx, int dy)
+{
+  if (i == parola.length)
+    return true;
+  
+  if (i == 0)
+  {
+    int remaining = parola.length - i;
+    int passi_x = (direzione & DX)   != 0 ? (n - x) : (x + 1);
+    int passi_y = (direzione & DOWN) != 0 ? (m - y) : (y + 1);
+    int diag_max = Math.min(passi_x, passi_y);
 
+    if (remaining > diag_max)
+      return false;
+    
+    dx = (direzione & DX)   != 0 ? 1 : -1;
+    dy = (direzione & DOWN) != 0 ? 1 : -1;
+  }
+  if (x < 0 || x >= n || y < 0 || y >= m)
+    return false;
+  if (parola[i] != M[y][x])
+    return false;
+    
+  return controlla_diagonale(M, parola, x + dx, y + dy, m, n, direzione, i + 1, dx, dy);
 }
