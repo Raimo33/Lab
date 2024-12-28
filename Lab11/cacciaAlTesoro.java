@@ -16,7 +16,9 @@ boolean incamminati(char[][] matrix, int x, int y, int m, int n)
 {
   x = (x + m) % m;
   y = (y + n) % n;
-  switch (matrix[x][y])
+  char c = matrix[x][y];
+  matrix[x][y] = ' ';
+  switch (c)
   {
     case 'X':
       return true;
