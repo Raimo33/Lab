@@ -1,0 +1,153 @@
+// Soluzione ITERATIVA:
+int[][] esplodiMatriceIterativo(int[][] T, int r, int c) {
+
+	int[] prossimaCellaEsplosiva = {r,c};
+	while (prossimaCellaEsplosiva!=null) {
+
+		T[r][c] = 0; // Esplodo la cella.
+		// Cerco gli indici riga e colonna della prossima cella esplosiva (se esiste).
+		prossimaCellaEsplosiva = cercaIndici(T, r, c);
+
+		// Se esiste la prossima cella esplosiva, continuo l'esplosione a catena.
+		if (prossimaCellaEsplosiva != null) {
+			r = prossimaCellaEsplosiva[0];
+			c = prossimaCellaEsplosiva[1];
+		}
+	}
+	return T; 
+}
+
+// Soluzione alternativa di cercaIndici che fa uso di due cicli for annidati.
+// Ricerca la prossima cella esplosiva, e se esiste ne restituisce
+// gli indici riga e colonna in un array di interi.
+int[] cercaIndiciAltraSoluzione(int[][] T, int r, int c) {
+
+	int n = T[0].length; // Numero colonne.
+	int m = T.length; // Numero righe.
+	// Identifico le celle agli estremi dell'intorno:
+	// rUp: riga in alto
+	// rDown: riga in basso
+	// cLeft: colonna a sinistra
+	// cRight: colonna a destra  
+	int rUp = (r == 0) ? 0 : r - 1;
+	int rDown = (r == m - 1) ? m - 1 : r + 1;
+	int cLeft = (c == 0) ? 0 : c - 1;
+	int cRight = (c == n - 1) ? n - 1 : c + 1;
+
+	// Parto dalla riga più in basso (da specifica dell'esercizio).
+	// Mi fermo quando ho superato la riga più in alto (rUp).  
+	for (int i = rDown; i >= rUp; i--) {
+
+		// Parto dalla colonna più a destra (da specifica dell'esercizio).
+		// Mi fermo quando ho superato la colonna più a sinistra (cLeft).  
+		for (int j = cRight; j >= cLeft; j--) {
+
+			// Il primo elemento che contiene il valore 1 
+			// corrisponde alla cella esplosiva successiva, 
+			// quindi restituisco l'array con il suo indice riga e colonna.
+			if (T[i][j] == 1) {
+				return new int[] {i, j};
+			}
+		}
+	}
+	// Se eseguo questa istruzione significa che non ho trovato nessun elemento 
+	// dell'intorno uguale a 1 (la cella esplosiva successiva non esiste).
+	return null;
+}
+
+int[][] esplodiMatrice(int[][] T, int r, int c) {
+
+	// Se la cella non è esplosiva, ho finito. 
+	if(T[r][c] == 0) return T;
+
+	T[r][c] = 0; // Esplodo la cella.
+	// Cerco gli indici riga e colonna della prossima cella esplosiva (se esiste).
+	int[] prossimaCellaEsplosiva = cercaIndici(T, r, c);
+
+	// int[] prossimaCellaEsplosiva = cercaIndiciAltraSoluzione(T, r, c);
+
+	// Se la prossima cella esplosiva non esiste ho finito.
+	if(prossimaCellaEsplosiva == null) return (T); 
+	// Altrimenti invoco ricorsivamente lo stesso metodo passando 
+	// gli indici della prossima cella esplosiva.
+	else return (esplodiMatrice(T, prossimaCellaEsplosiva[0], prossimaCellaEsplosiva[1]));
+	
+	// Soluzione iterativa:
+	// else return esplodiMatriceIterativo(T, prossimaCellaEsplosiva[0], prossimaCellaEsplosiva[1]); 
+}
+
+// Ricerca la prossima cella esplosiva, e se esiste ne restituisce
+// gli indici riga e colonna in un array di interi.
+int[] cercaIndici(int[][] T, int r, int c) {
+
+	int n = T[0].length; // Numero colonne.
+	int m = T.length; // Numero righe.
+	// Identifico le celle agli estremi dell'intorno:
+	// rUp: riga in alto
+	// rDown: riga in basso
+	// rMid: riga in mezzo fra rUp e rDown (se esiste)
+	// cLeft: colonna a sinistra
+	// cRight: colonna a destra 
+	// cMid: colonna in mezzo fra cLeft e cRight (se esiste) 
+	int rUp = (r == 0) ? 0 : r - 1;
+	int rDown = (r == m - 1) ? m - 1 : r + 1;
+	
+	// Controllo se c'e' una riga in mezzo fra rUp e rDown.
+	// Se non c'e', faccio corrispondere rMid a rDown 
+	// (farò due volte lo stesso controllo).
+	int rMid = (rUp<rDown-1) ? rDown-1 : rDown; 
+	
+	int cLeft = (c == 0) ? 0 : c - 1;
+	int cRight = (c == n - 1) ? n - 1 : c + 1;
+    
+    // Controllo se c'e' una riga in mezzo fra cLeft e cRight.
+	// Se non c'e', faccio corrispondere cMid a cRight 
+	// (farò due volte lo stesso controllo).
+    int cMid = (cLeft<cRight-1) ? cRight-1 : cRight;
+
+	// Sequenza di controlli per visitare le celle
+	// dell'intorno nell'ordine giusto.
+	if (T[rDown][cRight]==1) return new int[] {rDown, cRight};
+	if (T[rDown][cMid]==1) return new int[] {rDown, cMid};
+	if (T[rDown][cLeft]==1) return new int[] {rDown, cLeft};
+	if (T[rMid][cRight]==1) return new int[] {rMid, cRight};
+	if (T[rMid][cMid]==1) return new int[] {rMid, cMid};
+	if (T[rMid][cLeft]==1) return new int[] {rMid, cLeft};
+	if (T[rUp][cRight]==1) return new int[] {rUp, cRight};
+	if (T[rUp][cMid]==1) return new int[] {rUp, cMid};
+	if (T[rUp][cLeft]==1) return new int[] {rUp, cLeft};
+	
+	// Se eseguo questa istruzione significa che non ho trovato nessun elemento 
+	// dell'intorno uguale a 1 (la cella esplosiva successiva non esiste). 
+	return null;
+	
+}
+
+
+// SOLUZIONE ALTERNATIVA sviluppata dagli studenti:
+/* 
+int[][] esplodiMatrice(int[][] T, int r, int c) {
+	if(T[r][c] == 0) return T; // se uguale a 0 non fa nulla
+	else T[r][c] = 0; // altrimenti lo mette a 0
+	return intorno(T, r, c); // richiamo metodo per fare l'esplosione a catena
+}
+
+int[][] intorno(int[][] T, int r, int c) { //li metto a -1 così se non cambiano non ci sono 1 nell'intorno
+	int m = T.length, n = T[0].length;
+	for (int i = r + 1; i >= r - 1; i--) { // scorro le righe da su a giù
+		if (i >= 0 & i < m) { // controllo che la riga esista
+			for (int j = c + 1; j >= c - 1; j--) { // scorro le colonne da destra verso sinistra
+				if (j >= 0 & j < n) { // controllo che la colonna esista
+					if (T[i][j] == 1) { // se trovo un 1
+						T[i][j] = 0; // lo metto a 0, per continuare
+						return intorno(T, i, j); // richiamo lo stesso metodo con la matrice modificata e le nuove coordinate
+					}
+				}
+			}
+		}
+	}
+	return T; // se arrivo qui non ci sono 1, quindi torno la matrice invariata
+}
+* */
+
+		
