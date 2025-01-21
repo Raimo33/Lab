@@ -1,0 +1,23 @@
+long ripetiCifre(int n)
+{
+	long ret = 0;
+	byte cifra; //tra 0 e 9
+	byte i; //tra 0 e 9
+	long fattore = 1;
+	
+	while (n > 0)
+	{
+		cifra = (byte)(n % 10);
+		for (i = 0; i < cifra; i++)
+		{
+			ret += cifra * fattore;
+			fattore *= 10;
+			if (ret < 0)
+				return -1;
+		}
+		n /= 10;
+	}
+	
+	return ret;
+}
+

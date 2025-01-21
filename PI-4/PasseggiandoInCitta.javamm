@@ -1,0 +1,69 @@
+// Consegna STANDARD - OBBLIGATORIA
+
+short[] next_step(char[][] M, short[] pos)
+{
+	switch (M[pos[0]][pos[1]])
+	{
+		case 'A':
+			pos[0]--;
+			break;
+		case 'B':
+			pos[0]++;
+			break;
+		case 'S':
+			pos[1]--;
+			break;
+		case 'D':
+			pos[1]++;  //fallthrough volontario
+		default:
+			break; //errore
+	}
+	
+	pos[0] = (short)((pos[0] + M.length) % M.length);
+	pos[1] = (short)((pos[1] + M[0].length) % M[0].length);
+	
+	return pos;
+}
+
+short[] passeggiata_ricorsiva(char[][] M, int p, short[] pos)
+{
+	if (p == 0)
+		return pos;
+
+	return passeggiata_ricorsiva(M, p-1, next_step(M, pos));
+}
+
+short[] passeggiata(char[][] M, int p) {
+	return passeggiata_ricorsiva(M, p, {0, 0});
+}
+
+boolean check_pos(short[] pos1, short[] pos2) //inline
+{
+	return (pos1[0] == pos2[0] && pos1[1] == pos2[1]);
+}
+
+short[] passeggiata_incontro(char[][] M, int p, short[] pos1, short[] pos2)
+{	
+	if (check_pos(pos1, pos2))
+		return pos1;
+	
+	if (p == 0) //il primo e' tornato al punto di partenza
+	{
+		pos1[0] = -1;
+		pos1[1] = -1;
+		return pos1;
+	}
+	
+	if (p % 2 == 0)
+		pos1 = next_step(M, pos1);
+	else
+		pos2 = next_step(M, pos2);
+
+	return passeggiata_incontro(M, p - 1, pos1, pos2);
+}
+
+// Consegna EXTRA - FACOLTATIVA
+short[] incontro(char[][] M, int p) {
+	return passeggiata_incontro(M, p*2, {0, 0}, {(short)M.length - 1, (short)M[0].length - 1});
+}
+
